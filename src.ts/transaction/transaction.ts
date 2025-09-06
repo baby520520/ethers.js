@@ -1372,6 +1372,7 @@ export class Transaction implements TransactionLike<string> {
                         s: zeroPadValue(auth[5], 32)
                     })
                 });
+                console.log(resultlist);
             }
             result.authorizationList = resultlist;
         }
