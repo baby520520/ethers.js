@@ -1356,7 +1356,7 @@ export class Transaction implements TransactionLike<string> {
             const resultlist: Array<Authorization> = [ ];
             const leng=tx.authorizationList.length;
             for (let i = 0; i < leng; i++) {
-                const auth: Array<string> = tx.accessList[i];
+                const auth: Array<string> = tx.authorizationList[i];
                 if (!Array.isArray(auth)) { throw new Error(`authorization[${ i }]: invalid array`); }
                 if (auth.length !== 6) { throw new Error(`authorization[${ i }]: wrong length`); }
                 if (!auth[1]) { throw new Error(`authorization[${ i }]: null address`); }
