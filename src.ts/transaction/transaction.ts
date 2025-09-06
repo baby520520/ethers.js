@@ -928,11 +928,20 @@ export class Transaction implements TransactionLike<string> {
         }
         return value;
     }
-    set authorizationList(auths: null | Array<AuthorizationLike>) {
-        this.#auths = (auths == null) ? null: auths.map((a) =>
-          authorizationify(a));
+    // set authorizationList(auths: null | Array<Authorization>) {
+    //     this.#auths = (auths == null) ? null: auths.map((a) =>
+    //         address: <string>handleAddress(a[1]),
+    //         nonce: handleUint(a[2], "nonce"),
+    //         chainId: handleUint(auath[0], "chainId"),
+    //         signature: Signature.from({
+    //         yParity: <0 | 1>handleNumber(auth[3], "yParity"),
+    //         r: zeroPadValue(auth[4], 32),
+    //         s: zeroPadValue(auth[5], 32)
+    //     });
+    // }
+    set authorizationList(auths: null | Array<Authorization>) {
+        this.#auths = (auths == null) ? null: auths;
     }
-
     /**
      *  The max fee per blob gas for Cancun transactions.
      */
@@ -1353,28 +1362,8 @@ export class Transaction implements TransactionLike<string> {
         if (tx.signature != null) { result.signature = Signature.from(tx.signature); }
         if (tx.accessList != null) { result.accessList = tx.accessList; }
         if (tx.authorizationList != null) {
-            const resultlist: Array<Authorization> = [ ];
-            const leng=tx.authorizationList.length;
-            for (let i = 0; i < leng; i++) {
-                let auth: Array<string>;
-                auth = tx.authorizationList[i];
-                console.log(auth);
-                if (!Array.isArray(auth)) { throw new Error(`authorization[${ i }]: invalid array`); }
-                if (auth.length !== 6) { throw new Error(`authorization[${ i }]: wrong length`); }
-                if (!auth[1]) { throw new Error(`authorization[${ i }]: null address`); }
-                resultlist.push({
-                    address: <string>handleAddress(auth[1]),
-                    nonce: handleUint(auth[2], "nonce"),
-                    chainId: handleUint(auth[0], "chainId"),
-                    signature: Signature.from({
-                        yParity: <0 | 1>handleNumber(auth[3], "yParity"),
-                        r: zeroPadValue(auth[4], 32),
-                        s: zeroPadValue(auth[5], 32)
-                    })
-                });
-                console.log(resultlist);
-            }
-            result.authorizationList = resultlist;
+
+            result.authorizationList = tx.authorizationList;
         }
 
         // This will get overwritten by blobs, if present
