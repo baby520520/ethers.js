@@ -1353,7 +1353,25 @@ export class Transaction implements TransactionLike<string> {
         if (tx.signature != null) { result.signature = Signature.from(tx.signature); }
         if (tx.accessList != null) { result.accessList = tx.accessList; }
         if (tx.authorizationList != null) {
-            result.authorizationList = tx.authorizationList;
+            const resultlist: Array<Authorization> = [ ];
+            const leng=tx.authorizationList.length;
+            for (let i = 0; i < leng; i++) {
+                const auth: Array<string> = tx.accessList[i];
+                if (!Array.isArray(auth)) { throw new Error(`authorization[${ i }]: invalid array`); }
+                if (auth.length !== 6) { throw new Error(`authorization[${ i }]: wrong length`); }
+                if (!auth[1]) { throw new Error(`authorization[${ i }]: null address`); }
+                resultlist.push({
+                    address: <string>handleAddress(auth[1]),
+                    nonce: handleUint(auth[2], "nonce"),
+                    chainId: handleUint(auth[0], "chainId"),
+                    signature: Signature.from({
+                        yParity: <0 | 1>handleNumber(auth[3], "yParity"),
+                        r: zeroPadValue(auth[4], 32),
+                        s: zeroPadValue(auth[5], 32)
+                    })
+                });
+            }
+            result.authorizationList = resultlist;
         }
 
         // This will get overwritten by blobs, if present
