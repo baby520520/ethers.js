@@ -18,9 +18,10 @@ export function myauthorizationify(auth: Authorization): Authorization {
         nonce: auth[2],
         chainId: auth[0],
         signature: Signature.from({
-        yParity: auth[3],
-        r: zeroPadValue(auth[4], 32),
-        s: zeroPadValue(auth[5], 32)
+            yParity: auth[3],
+            r: zeroPadValue(auth[4], 32),
+            s: zeroPadValue(auth[5], 32)
 
+        })
     };
 }
